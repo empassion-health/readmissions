@@ -23,7 +23,7 @@ Videos:
 [Here](https://docs.getdbt.com/dbt-cli/installation) are instructions for installing dbt.
 
 ## Getting Started
-Complete the following steps to configure the package to run in your environment.
+Complete the following steps to configure the data mart to run in your environment.
 
 1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repo to your local machine or environment
 2. Configure [dbt_project.yml](/dbt_project.yml)
@@ -45,6 +45,7 @@ dbt build --vars '{input_database: my_database, input_schema: my_input, output_d
 Have an opinion on the mappings? Notice any bugs when installing and running the package? 
 If so, we highly encourage and welcome contributions!
 
+## Community
 Join our growing community of healthcare data practitioners on [Slack!]([https://tuvahealth.slack.com/ssb/redirect#/shared-invite/email](https://join.slack.com/t/thetuvaproject/shared_invite/zt-16iz61187-G522Mc2WGA2mHF57e0il0Q))!
 
 ## Database Support
