@@ -2,26 +2,17 @@
 
 # Readmissions 
 
-Check out the [Tuva Data Model](https://docs.google.com/spreadsheets/d/1NuMEhcx6D6MSyZEQ6yk0LWU0HLvaeVma8S-5zhOnbcE/edit#gid=1991587675)
+[DAG](https://tuva-health.github.io/readmissions/#!/overview?g_v=1)
 
-Check out the latest [DAG](https://tuva-health.github.io/readmissions/#!/overview?g_v=1) for this concept
+Knowledge Base:
+- Check out the [methodology](https://thetuvaproject.com/docs/methodology/hospital-readmissions) used for the readmission data mart
+- Check our the [data model]() for the readmissions data mart
 
-Check out our [Docs](http://thetuvaproject.com/)
+Videos:
+- [High-level overview](https://www.youtube.com/watch?v=TCG_QCb63n4) of what it looks like to do proper readmission analytics
+- [How to video](https://www.youtube.com/watch?v=5pA-gm94PyU) explaining how to run the readmission data mart
 
-Other links of interest related to this concept:
-
-- Short video giving a [high-level overview](https://www.youtube.com/watch?v=TCG_QCb63n4)
-  of what it looks like to do proper analytics on hospital readmissions
-
-- [Video explanation](https://www.youtube.com/watch?v=5pA-gm94PyU)
-  of how to run this readmissions dbt project
-
-This is Tuva Project's Readmissions concept, which is a dbt project to do hospital readmission analytics.
-It is based on the [CMS Readmission Measures Methodology](https://qualitynet.cms.gov/inpatient/measures/readmission/methodology) and includes other features, such as data quality checks specific to readmissions.
-
-The main output tables from this dbt project are:
-1. `encounter_augmented`: lists all acute inpatient encounters with fields that give extra information about the encounter (e.g. length_of_stay, index_admission_flag, planned_flag, specialty_cohort, etc.), as well as data quality flags.
-2. `readmission_summary`: lists all encounters that are not discarded due to data quality problems, together with fields giving extra information about the encounter and it's associated readmission (if the encounter had a readmission).
+This is Tuva Project's Readmissions data mart, which is a dbt project to create readmission measures.  It is based on the [CMS Readmission Measures Methodology](https://qualitynet.cms.gov/inpatient/measures/readmission/methodology) and includes other features, such as data quality checks specific to readmissions.
 
 ## Pre-requisites
 1. You have healthcare data (e.g. EHR, claims, lab, HIE, etc.) in a data warehouse.
