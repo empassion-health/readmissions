@@ -27,8 +27,8 @@ Complete the following steps to configure the package to run in your environment
 
 1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repo to your local machine or environment
 2. Configure [dbt_project.yml](/dbt_project.yml)
-    a. Profile: set to 'tuva' by default - change this to an active profile in the profile.yml file that connects to your data warehouse 
-    b. Fill in the following vars (variables):
+    - Profile: set to 'tuva' by default - change this to an active profile in the profile.yml file that connects to your data warehouse 
+    - Fill in the following vars (variables):
       - source_name - description of the dataset feeding this project 
       - input_database - database where sources feeding this project are stored 
       - input_schema - schema where sources feeding this project is stored 
@@ -45,7 +45,7 @@ dbt build --vars '{input_database: my_database, input_schema: my_input, output_d
 Have an opinion on the mappings? Notice any bugs when installing and running the package? 
 If so, we highly encourage and welcome contributions!
 
-Join the conversation on [Slack](https://tuvahealth.slack.com/ssb/redirect#/shared-invite/email)!
+Join our growing community of healthcare data practitioners on [Slack!]([https://tuvahealth.slack.com/ssb/redirect#/shared-invite/email](https://join.slack.com/t/thetuvaproject/shared_invite/zt-16iz61187-G522Mc2WGA2mHF57e0il0Q))!
 
 ## Database Support
 This package has been tested on Snowflake and Redshift.
