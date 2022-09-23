@@ -27,7 +27,7 @@ Complete the following steps to configure the data mart to run in your environme
 
 1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repo to your local machine or environment
 2. Configure [dbt_project.yml](/dbt_project.yml)
-    - Profile: set to 'tuva' by default - change this to an active profile in the profile.yml file that connects to your data warehouse 
+    - Profile: set to 'default' by default - change this to an active profile in the profile.yml file that connects to your data warehouse 
     - Fill in the following vars (variables):
       - source_name - description of the dataset feeding this project 
       - input_database - database where sources feeding this project are stored 
@@ -36,7 +36,7 @@ Complete the following steps to configure the data mart to run in your environme
       - output_schema - name of the schema where output of this project should be written
 3. Execute `dbt build` to load seed files, run models, and perform tests.
 
-Alternatively you can execute the following code and skip step 2b and step 3.
+Alternatively you can execute the following code and skip step 2b and step 3:
 ```
 dbt build --vars '{input_database: my_database, input_schema: my_input, output_database: my_other_database, output_schema: i_love_data}'
 ```
@@ -46,7 +46,7 @@ Have an opinion on the mappings? Notice any bugs when installing and running the
 If so, we highly encourage and welcome contributions!
 
 ## Community
-Join our growing community of healthcare data practitioners on [Slack!]([https://tuvahealth.slack.com/ssb/redirect#/shared-invite/email](https://join.slack.com/t/thetuvaproject/shared_invite/zt-16iz61187-G522Mc2WGA2mHF57e0il0Q))!
+Join our growing community of healthcare data practitioners on [Slack](https://join.slack.com/t/thetuvaproject/shared_invite/zt-16iz61187-G522Mc2WGA2mHF57e0il0Q))!
 
 ## Database Support
 This package has been tested on Snowflake and Redshift.
