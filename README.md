@@ -17,8 +17,8 @@ Videos:
 1. You have healthcare data (e.g. claims data) in a data warehouse (e.g. Snowflake)
 2. You have [dbt](https://www.getdbt.com/) installed and configured (i.e. connected to your data warehouse)
 3. Your healthcare data is in the proper format to run the readmissions data mart:
-- [Claims Preprocessing](https://github.com/tuva-health/claims_preprocessing_snowflake) will transform your claims data into the proper format
-- Alternatively you can map your data to the source schema described in [source.yml](models/source.yml)
+    - [Claims Preprocessing](https://github.com/tuva-health/claims_preprocessing_snowflake) will transform your claims data into the proper format
+    - Alternatively you can map your data to the source schema described in [source.yml](models/source.yml)
 
 [Here](https://docs.getdbt.com/dbt-cli/installation) are instructions for installing dbt.
 
