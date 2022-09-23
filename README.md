@@ -1,18 +1,18 @@
 [![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.x&color=orange)
 
 # Readmissions 
+This is Tuva Project's Readmissions data mart, which is a dbt project to create readmission measures.  It is based on the [CMS Readmission Measures Methodology](https://qualitynet.cms.gov/inpatient/measures/readmission/methodology) and includes other features, such as data quality checks specific to readmissions.
 
-[DAG](https://tuva-health.github.io/readmissions/#!/overview?g_v=1)
+Check the latest [DAG](https://tuva-health.github.io/readmissions/#!/overview?g_v=1)
 
 Knowledge Base:
 - Check out the [methodology](https://thetuvaproject.com/docs/methodology/hospital-readmissions) used for the readmission data mart
-- Check our the [data model]() for the readmissions data mart
+- Check our the [data model](https://thetuvaproject.com/docs/data-models/data-marts/readmissions) for the readmissions data mart
 
 Videos:
 - [High-level overview](https://www.youtube.com/watch?v=TCG_QCb63n4) of what it looks like to do proper readmission analytics
 - [How to video](https://www.youtube.com/watch?v=5pA-gm94PyU) explaining how to run the readmission data mart
 
-This is Tuva Project's Readmissions data mart, which is a dbt project to create readmission measures.  It is based on the [CMS Readmission Measures Methodology](https://qualitynet.cms.gov/inpatient/measures/readmission/methodology) and includes other features, such as data quality checks specific to readmissions.
 
 ## Pre-requisites
 1. You have healthcare data (e.g. EHR, claims, lab, HIE, etc.) in a data warehouse.
