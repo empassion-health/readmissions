@@ -78,11 +78,11 @@ select
     case
         when aa.ms_drg is null then 1
 	else 0
-    end as missing_ms_drg,
+    end as missing_ms_drg_flag,
     case
         when ee.ms_drg is null then 1
 	else 0
-    end as invalid_ms_drg
+    end as invalid_ms_drg_flag
 
 from {{ ref('stg_encounter') }} aa
      left join {{ ref('diagnosis_ccs') }} bb
@@ -126,9 +126,9 @@ select
 	    or
 	    (overlaps_with_another_encounter_flag = 1)
 	    or
-	    (missing_ms_drg = 1)
+	    (missing_ms_drg_flag = 1)
 	    or
-	    (invalid_ms_drg = 1)
+	    (invalid_ms_drg_flag = 1)
 	    then 1
 	else 0
     end as disqualified_encounter_flag,
@@ -142,8 +142,8 @@ select
     invalid_primary_diagnosis_code_flag,
     no_diagnosis_ccs_flag,
     overlaps_with_another_encounter_flag,
-    missing_ms_drg,
-    invalid_ms_drg
+    missing_ms_drg_flag,
+    invalid_ms_drg_flag
 from encounter_data_quality_issues
 )    
 
