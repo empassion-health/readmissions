@@ -4,7 +4,7 @@ config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
 # Configuration required for CLI users.  Cloud users can leave as 'default'
-profile: 'default'
+profile: 'coco_fh_test'
 
 vars:
     source_name: core                  # configuration required

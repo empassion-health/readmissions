@@ -42,7 +42,9 @@ select
     ee.multiple_primary_diagnoses_flag,
     ee.invalid_primary_diagnosis_code_flag,
     ee.no_diagnosis_ccs_flag,
-    ee.overlaps_with_another_encounter_flag
+    ee.overlaps_with_another_encounter_flag,
+    ee.missing_ms_drg,
+    ee.invalid_ms_drg
     
 from
     {{ ref('stg_encounter') }} aa

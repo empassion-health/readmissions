@@ -74,7 +74,15 @@ select
 	                         from {{ ref('encounter_overlap') }} )
 	then 1
 	else 0
-    end as overlaps_with_another_encounter_flag
+    end as overlaps_with_another_encounter_flag,
+    case
+        when aa.ms_drg is null then 1
+	else 0
+    end as missing_ms_drg,
+    case
+        when ee.ms_drg is null then 1
+	else 0
+    end as invalid_ms_drg
 
 from {{ ref('stg_encounter') }} aa
      left join {{ ref('diagnosis_ccs') }} bb
@@ -83,6 +91,8 @@ from {{ ref('stg_encounter') }} aa
      on aa.discharge_disposition_code = cc.discharge_disposition_code
      left join {{ ref('primary_diagnosis_count') }} dd
      on aa.encounter_id = dd.encounter_id
+     left join {{ ref('ms_drg') }} ee
+     on aa.ms_drg = ee.ms_drg    
 ),
 
 
@@ -115,6 +125,10 @@ select
 	    (no_diagnosis_ccs_flag = 1)
 	    or
 	    (overlaps_with_another_encounter_flag = 1)
+	    or
+	    (missing_ms_drg = 1)
+	    or
+	    (invalid_ms_drg = 1)
 	    then 1
 	else 0
     end as disqualified_encounter_flag,
@@ -127,7 +141,9 @@ select
     multiple_primary_diagnoses_flag,
     invalid_primary_diagnosis_code_flag,
     no_diagnosis_ccs_flag,
-    overlaps_with_another_encounter_flag
+    overlaps_with_another_encounter_flag,
+    missing_ms_drg,
+    invalid_ms_drg
 from encounter_data_quality_issues
 )    
 
