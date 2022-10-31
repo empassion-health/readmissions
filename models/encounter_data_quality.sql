@@ -38,7 +38,7 @@ select
         when
 	    (aa.discharge_disposition_code is not null)
 	    and
-	    (cc.discharge_disposition_code is null) then 1
+	    (cc.code is null) then 1
 	else 0
     end as invalid_discharge_disposition_code_flag,
     case
@@ -80,19 +80,19 @@ select
 	else 0
     end as missing_ms_drg_flag,
     case
-        when ee.ms_drg is null then 1
+        when ee.code is null then 1
 	else 0
     end as invalid_ms_drg_flag
 
 from {{ ref('stg_encounter') }} aa
      left join {{ ref('diagnosis_ccs') }} bb
      on aa.encounter_id = bb.encounter_id
-     left join {{ ref('discharge_disposition_code') }} cc
-     on aa.discharge_disposition_code = cc.discharge_disposition_code
+     left join {{ source('tuva_terminology','discharge_disposition') }} cc
+     on aa.discharge_disposition_code = cc.code
      left join {{ ref('primary_diagnosis_count') }} dd
      on aa.encounter_id = dd.encounter_id
-     left join {{ ref('ms_drg') }} ee
-     on aa.ms_drg = ee.ms_drg    
+     left join {{ source('tuva_terminology','ms_drg') }} ee
+     on aa.ms_drg = ee.code    
 ),
 
 
