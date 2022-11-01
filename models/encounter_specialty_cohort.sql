@@ -26,11 +26,11 @@ select distinct encounter_id
 from {{ ref('procedure_ccs') }}
 where
     procedure_code in (select distinct icd_10_pcs
-                       from {{ ref('surgery_gynecology_cohort') }} )
+                       from {{ source('tuva_terminology','surgery_gynecology_cohort') }} )
     or
     ccs_procedure_category in
            (select distinct ccs
-            from {{ ref('specialty_cohort') }}
+            from {{ source('tuva_terminology','specialty_cohort') }}
 	    where specialty_cohort = 'Surgery/Gynecology' )
 ),
 
@@ -45,7 +45,7 @@ where
     and
     ccs_diagnosis_category in
            (select distinct ccs
-            from {{ ref('specialty_cohort') }}
+            from {{ source('tuva_terminology','specialty_cohort') }}
 	    where specialty_cohort = 'Medicine' )
 ),
 
@@ -60,7 +60,7 @@ where
     and
     ccs_diagnosis_category in
            (select distinct ccs
-            from {{ ref('specialty_cohort') }}
+            from {{ source('tuva_terminology','specialty_cohort') }}
 	    where specialty_cohort = 'Cardiorespiratory' )    
 ),
 
@@ -75,7 +75,7 @@ where
     and
     ccs_diagnosis_category in
            (select distinct ccs
-            from {{ ref('specialty_cohort') }}
+            from {{ source('tuva_terminology','specialty_cohort') }}
 	    where specialty_cohort = 'Cardiovascular' )    
 ),
 
@@ -90,7 +90,7 @@ where
     and
     ccs_diagnosis_category in
            (select distinct ccs
-            from {{ ref('specialty_cohort') }}
+            from {{ source('tuva_terminology','specialty_cohort') }}
 	    where specialty_cohort = 'Neurology' )    
 ),
 

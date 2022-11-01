@@ -13,7 +13,7 @@ with always_planned_px as (
 select distinct encounter_id
 from {{ ref('procedure_ccs') }}
 where ccs_procedure_category in (select distinct ccs_procedure_category
-              from {{ ref('always_planned_ccs_procedure_category') }} )
+              from {{ source('tuva_terminology','always_planned_ccs_procedure_category') }} )
 ),
 
 
@@ -25,7 +25,7 @@ select distinct encounter_id
 from {{ ref('diagnosis_ccs') }}
 where ccs_diagnosis_category in
     (select distinct ccs_diagnosis_category
-     from {{ ref('always_planned_ccs_diagnosis_category') }} )
+     from {{ source('tuva_terminology','always_planned_ccs_diagnosis_category') }} )
 ),
 
 
@@ -38,7 +38,7 @@ select distinct encounter_id
 from {{ ref('procedure_ccs') }}
 where ccs_procedure_category in
     (select distinct ccs_procedure_category
-     from {{ ref('potentially_planned_ccs_procedure_category') }} )
+     from {{ source('tuva_terminology','potentially_planned_ccs_procedure_category') }} )
 ),
 
 
@@ -51,7 +51,7 @@ select distinct encounter_id
 from {{ ref('procedure_ccs') }}
 where procedure_code in
     (select distinct icd_10_pcs
-     from {{ ref('potentially_planned_icd_10_pcs') }} )
+     from {{ source('tuva_terminology','potentially_planned_icd_10_pcs') }} )
 ),
 
 
@@ -62,11 +62,11 @@ select distinct encounter_id
 from {{ ref('diagnosis_ccs') }}
 where
     diagnosis_code in (select distinct icd_10_cm
-                       from {{ ref('acute_diagnosis_icd_10_cm') }})
+                       from {{ source('tuva_terminology','acute_diagnosis_icd_10_cm') }} )
     or
     ccs_diagnosis_category in
              (select distinct ccs_diagnosis_category
-              from {{ ref('acute_diagnosis_ccs') }})
+              from {{ source('tuva_terminology','acute_diagnosis_ccs') }} )
 ),
 
 

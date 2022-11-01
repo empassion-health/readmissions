@@ -18,7 +18,7 @@ select distinct encounter_id
 from {{ ref('diagnosis_ccs') }}
 where ccs_diagnosis_category in
     (select distinct ccs_diagnosis_category
-     from {{ ref('exclusion_ccs_diagnosis_category') }} )
+     from {{ source('tuva_terminology','exclusion_ccs_diagnosis_category') }} )
 )
 
 
