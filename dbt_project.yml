@@ -4,27 +4,27 @@ config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
 # Configuration required for CLI users.  Cloud users can leave as 'default'
-profile: 'default'
+profile: 
 
 vars:
-    source_name: core                  # configuration required
+    source_name:                   # configuration required
                                        # name describing the dataset feeding
                                        # this project - typically matches input
                                        # schema name
 
-    input_database: tuva               # configuration required
+    input_database:                # configuration required
                                        # name of the database where sources
                                        # feeding this project are stored
     
-    input_schema: core                 # configuration required
+    input_schema:                  # configuration required
                                        # name of the schema where sources
                                        # feeding this project are stored
 
-    output_database: tuva              # configuration required
+    output_database:               # configuration required
                                        # name of the database where output of
                                        # this project should be written
 
-    output_schema: readmissions        # configuration required
+    output_schema:         # configuration required
                                        # name of the schema where output of this
                                        # schema should be written
 
