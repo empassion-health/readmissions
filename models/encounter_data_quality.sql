@@ -76,7 +76,7 @@ select
 	else 0
     end as overlaps_with_another_encounter_flag,
     case
-        when aa.ms_drg is null then 1
+        when aa.ms_drg_code is null then 1
 	else 0
     end as missing_ms_drg_flag,
     case
@@ -92,7 +92,7 @@ from {{ ref('stg_encounter') }} aa
      left join {{ ref('primary_diagnosis_count') }} dd
      on aa.encounter_id = dd.encounter_id
      left join {{ source('tuva_terminology','ms_drg') }} ee
-     on aa.ms_drg = ee.code    
+     on aa.ms_drg_code = ee.code    
 ),
 
 

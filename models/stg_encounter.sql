@@ -14,8 +14,8 @@ select
     cast(encounter_start_date as date) as admit_date,
     cast(encounter_end_date as date) as discharge_date,
     cast(discharge_disposition_code as varchar) as discharge_disposition_code,
-    cast(facility_npi as varchar) as facility,
-    cast(ms_drg_code as varchar) as ms_drg
+    cast(facility_npi as varchar) as facility_npi,
+    cast(ms_drg_code as varchar) as ms_drg_code
     
 from {{ var('encounter') }}
 where encounter_type = 'acute inpatient'

@@ -15,8 +15,8 @@ select
     aa.admit_date,
     aa.discharge_date,
     aa.discharge_disposition_code,
-    aa.facility,
-    aa.ms_drg,
+    aa.facility_npi,
+    aa.ms_drg_code,
     aa.discharge_date - aa.admit_date  as length_of_stay,
     case
         when bb.encounter_id is not null then 1
