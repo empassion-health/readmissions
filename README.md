@@ -4,7 +4,7 @@
 
 ## 🧰 What does this project do?
 
-The Tuva Project's Readmissions data mart creates readmission flags on your patient population.  For a detailed overview of what the project does and how it works, check out our [Knowledge Base](https://thetuvaproject.com/docs/methodology/hospital-readmissions).  For information on data models and to view the entire DAG check out our dbt [Docs](https://tuva-health.github.io/readmissions/#!/overview).
+The Tuva Project's Readmissions data mart creates readmission flags on your patient population.  For a detailed overview of what the project does and how it works, check out our [Knowledge Base](https://thetuvaproject.com/docs/packages/readmissions).  For information on data models and to view the entire DAG check out our dbt [Docs](https://tuva-health.github.io/readmissions/#!/overview).
 
 ## 🔌 Database Support
 
