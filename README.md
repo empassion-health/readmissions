@@ -4,13 +4,15 @@
 
 ## 🧰 What does this project do?
 
-The Tuva Project's Readmissions package calculates hospital readmission measures on your healthcare data.    
+The Tuva Project's Readmissions package calculates hospital readmission measures on your healthcare data.  
+
+For a detailed overview of the methodology used in the package check out our [Knowledge Base](https://thetuvaproject.com/docs/the-tuva-project/data-marts/readmissions).  
 
 For information on data models and to view the entire DAG check out our dbt [Docs](https://tuva-health.github.io/readmissions/#!/overview).
 
 ## 🔌 What databases are supported?
 
-This package has been tested on **Snowflake** and **Redshift**.
+This package has been tested on **Snowflake** and **Redshift** and **BigQuery**.
 
 ## 📚 What versions of dbt are supported?
 
