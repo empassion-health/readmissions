@@ -42,7 +42,7 @@ To import the Readmissions package, you need to include the following in your `
 ```yaml
 packages:
   - package: tuva-health/readmissions
-    version: 0.1.4
+    version: 0.1.5
 
 ```
 
