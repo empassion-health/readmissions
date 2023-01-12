@@ -92,7 +92,7 @@ from {{ ref('readmissions__stg_encounter') }} aa
      left join {{ ref('readmissions__primary_diagnosis_count') }} dd
      on aa.encounter_id = dd.encounter_id
      left join {{ ref('terminology__ms_drg') }} ee
-     on aa.ms_drg_code = ee.ms_drg_code
+     on cast(aa.ms_drg_code as int) = cast(ee.ms_drg_code as int)
 ),
 
 
