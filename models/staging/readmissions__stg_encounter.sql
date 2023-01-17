@@ -15,8 +15,6 @@ select
     cast(discharge_disposition_code as {{ dbt.type_string() }}) as discharge_disposition_code,
     cast(facility_npi as {{ dbt.type_string() }}) as facility_npi,
     cast(ms_drg_code as {{ dbt.type_string() }}) as ms_drg_code,
-    cast(paid_amount as numeric(38,2)) as paid_amount    
+    cast(paid_amount as numeric) as paid_amount    
 from {{ var('encounter') }}
 where encounter_type = 'acute inpatient'
-
-
