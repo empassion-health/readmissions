@@ -2,16 +2,16 @@ name: 'integration_tests'
 version: '1.0.0'
 config-version: 2
 
-profile: 'tuva-snowflake'
+profile: 'default'
 
 vars:
 
 ## Configure input database and schema:
-  readmissions_input_database: dev_aaron
-  readmissions_input_schema: core
+  readmissions_input_database: default
+  readmissions_input_schema: default
 
 ## Configure target database:
-  tuva_database: dev_aaron
+  tuva_database: default
 
 ## Optional:
 ## Override target database and schema for readmissions
