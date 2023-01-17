@@ -11,7 +11,7 @@ with acute_institutional_claims as (
 select distinct
     encounter_id
 ,   claim_id
-from {{ ref('claims_preprocessing__intermediate_medical_claim_enhanced') }}
+from {{ ref('claims_preprocessing__medical_claim_enhanced') }}
 where encounter_type = 'acute inpatient'
     and claim_type = 'institutional'
 )
