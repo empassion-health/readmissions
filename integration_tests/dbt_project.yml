@@ -4,46 +4,26 @@ config-version: 2
 
 profile: 'default'
 
+vars:
 
+## Configure input database and schema:
+  readmissions_input_database: default
+  readmissions_input_schema: default
 
-#vars:
-#### output config option 1, applies to all tuva packages
-#  tuva_database: dev_user
-#  tuva_schema_prefix: test
+## Configure target database:
+  tuva_database: default
 
-### output config option 2, applies to readmissions, overrides option 1
-#  readmissions_database: tuva
+## Optional:
+## Override target database and schema for readmissions
+#  readmissions_database: dev_aaron
 #  readmissions_schema: test_readmissions
 
+## Prefix all schemas
+#  tuva_schema_prefix: test
 
-### input config option 1, applies to all SmartMarts
-#  core_condition_override: "{{ref('condition')}}"
-#  core_patient_override:   "{{ref('patient')}}"
-#  core_encounter_override: "{{ref('encounter')}}"
-#  core_procedure_override: "{{ref('procedure')}}"
-
-## you can also point these to sources
-#  core_condition_override: "{{source('core','condition')}}"
-#  core_patient_override:   "{{source('core','patient')}}"
-#  core_encounter_override: "{{source('core','encounter')}}"
-#  core_procedure_override: "{{source('core','procedure')}}"
-
-
-### input config option 2, applies to readmissions, overrides option 1
-#  readmissions_condition_override: "{{ref('condition')}}"
-#  readmissions_patient_override:   "{{ref('patient')}}"
-#  readmissions_encounter_override: "{{ref('encounter')}}"
-#  readmissions_procedure_override: "{{ref('procedure')}}"
-
-
-
-### enabled/disabled configs
-## applies to all packages
-#  tuva_packages_enabled: false
-#
-### applies to readmissions only
-#  readmissions_enabled: true
-#  terminology_enabled: false
+## Uncomment if you want to run only the bare minimum of what readmissions requires
+  tuva_packages_enabled: false
+  readmissions_enabled: true
 
 dispatch:
   - macro_namespace: dbt

@@ -1,1 +1,2 @@
-select * from {{source('core','encounter')}}
+select *
+from {{source('core','encounter')}}
