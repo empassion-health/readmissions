@@ -1,1 +1,2 @@
-select * from {{source('core','patient')}}
+select *
+from {{source('core','patient')}}
