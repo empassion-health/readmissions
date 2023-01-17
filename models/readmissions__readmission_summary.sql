@@ -31,6 +31,7 @@ select
     aa.discharge_disposition_code,
     aa.facility_npi,
     aa.ms_drg_code,
+    aa.paid_amount,
     aa.length_of_stay,
     aa.index_admission_flag,
     aa.planned_flag,
@@ -39,19 +40,17 @@ select
     aa.diagnosis_ccs,
     case
         when bb.encounter_id is not null then 1
-	else 0
+	    else 0
     end as had_readmission_flag,
-    bb.admit_date - aa.discharge_date as days_to_readmit,
+    {{ dbt.datediff("aa.discharge_date", "bb.admit_date","day") }} as days_to_readmit,
     case
-        when ({{ dbt.datediff("bb.admit_date", "aa.discharge_date", "day") }}) <= 30  then 1
-	else 0
+        when ({{ dbt.datediff("aa.discharge_date", "bb.admit_date","day") }}) <= 30  then 1
+	    else 0
     end as readmit_30_flag,
     case
         when
-	    (({{ dbt.datediff("bb.admit_date", "aa.discharge_date", "day") }}) <= 30)
-	    and
-	    (bb.planned_flag = 0) then 1
-	else 0
+	    (({{ dbt.datediff("aa.discharge_date", "bb.admit_date", "day") }}) <= 30) and (bb.planned_flag = 0) then 1
+	    else 0
     end as unplanned_readmit_30_flag,
     bb.encounter_id as readmission_encounter_id,
     bb.admit_date as readmission_admit_date,
@@ -65,16 +64,12 @@ select
     bb.specialty_cohort as readmission_specialty_cohort,
     bb.died_flag as readmission_died_flag,
     bb.diagnosis_ccs as readmission_diagnosis_ccs
-
-
 from
     encounter_sequence aa
     left join encounter_sequence bb
     on aa.patient_id = bb.patient_id
     and aa.encounter_seq + 1 = bb.encounter_seq
 )
-
-
 
 select *
 from readmission_calc

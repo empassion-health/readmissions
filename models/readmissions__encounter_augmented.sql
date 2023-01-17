@@ -7,8 +7,6 @@
 {{ config(materialized='table'
     ,enabled=var('readmissions_enabled',var('tuva_packages_enabled',True))) }}
 
-
-
 with encounter_augmented as (
 select
     aa.encounter_id,
@@ -18,19 +16,20 @@ select
     aa.discharge_disposition_code,
     aa.facility_npi,
     aa.ms_drg_code,
-    aa.discharge_date - aa.admit_date  as length_of_stay,
+    aa.paid_amount,
+    {{ dbt.datediff("aa.discharge_date", "aa.admit_date","day") }} as length_of_stay,
     case
         when bb.encounter_id is not null then 1
-	else 0
+	    else 0
     end as index_admission_flag,
     case
         when cc.encounter_id is not null then 1
-	else 0
+	    else 0
     end as planned_flag,
     dd.specialty_cohort,
     case
         when aa.discharge_disposition_code = '20' then 1
-	else 0
+	    else 0
     end as died_flag,
     ee.diagnosis_ccs,
     ee.disqualified_encounter_flag,
@@ -46,7 +45,6 @@ select
     ee.overlaps_with_another_encounter_flag,
     ee.missing_ms_drg_flag,
     ee.invalid_ms_drg_flag
-    
 from
     {{ ref('readmissions__stg_encounter') }} aa
     left join {{ ref('readmissions__index_admission') }} bb
@@ -58,8 +56,6 @@ from
     left join {{ ref('readmissions__encounter_data_quality') }} ee
     on aa.encounter_id = ee.encounter_id
 )
-
-
 
 select *
 from encounter_augmented
