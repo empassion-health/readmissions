@@ -20,6 +20,89 @@ from {{ ref('readmissions__encounter_augmented') }}
 where disqualified_encounter_flag = 0
 ),
 
+, encounter_sequence_setup (select 
+*
+, LAG(discharge_date, 1) OVER(PARTITION BY patient_id
+       ORDER BY admit_date) as previous_discharge_date
+, row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag order BY admit_date) as first_row
+, row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag order BY admit_date desc) as last_row
+ from production-dna.analytics_int.encounter_augmented
+order by admit_date)
+
+, dates as (select *
+, if(first_row=overlaps_with_another_encounter_flag, true, false) as first_row_flag
+, if(last_row=overlaps_with_another_encounter_flag, true, false) as last_row_flag
+from encounter_sequence_setup
+)
+
+,  admits as (select 
+*
+
+, row_number () over  (partition by patient_id order BY admit_date desc) as admit_rank
+
+from dates
+where first_row_flag )
+
+,  discharge as (select patient_id, 
+discharge_date
+, row_number () over  (partition by patient_id order BY discharge_date desc) as admit_rank
+
+from dates
+where last_row_flag )
+
+join_admits_discharge as (select 
+, encounter_id
+, patient_id
+, admits.admit_date
+, discharge.discharge_date
+, discharge_disposition_code
+, facility_npi
+, ms_drg_code
+, paid_amount
+, datediff(admits.admit_date, discharge.discharge_date, days) length_of_stay
+, index_admission_flag
+, planned_flag
+, died_flag
+, diagnosis_ccs
+, disqualified_encounter_flag
+, missing_admit_date_flag
+, missing_discharge_date_flag
+, admit_after_discharge_flag
+, missing_discharge_disposition_code_flag
+, invalid_discharge_disposition_code_flag
+, missing_primary_diagnosis_flag
+, multiple_primary_diagnoses_flag
+, invalid_primary_diagnosis_code_flag
+, no_diagnosis_ccs_flag
+, 0 as overlaps_with_another_encounter_flag
+, missing_ms_drg_flag
+, invalid_ms_drg_flag
+
+from admits
+left join discharge 
+on admits.admit_rank=discharge.admit_rank
+)
+
+, encounter_sequence_update as (
+select
+  
+from join_admits_discharge
+
+)
+
+, join_together_encounter_sequence as (
+
+select *
+from encounter_sequence
+union all
+select *
+from encounter_sequence_update
+
+
+)
+
+
+,
 
 readmission_calc as (
 select
