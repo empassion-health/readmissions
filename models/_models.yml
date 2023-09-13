@@ -272,6 +272,9 @@ models:
     columns:
       - name: encounter_id
         description: "The unique identifier for the encounter"
+        tests:
+          - unique
+          - not_null
       - name: patient_id
         description: "The unique identifier for the patient"
       - name: admit_date

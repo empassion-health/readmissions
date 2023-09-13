@@ -12,56 +12,67 @@
 -- encounter is for a given patient
 with encounter_sequence as (
 select
-    *,
-    row_number() over(
-        partition by patient_id order by admit_date, discharge_date
-    ) as encounter_seq
+    *
 from {{ ref('readmissions__encounter_augmented') }}
 where disqualified_encounter_flag = 0
-),
+)
 
-, encounter_sequence_setup (select 
-*
-, LAG(discharge_date, 1) OVER(PARTITION BY patient_id
-       ORDER BY admit_date) as previous_discharge_date
+
+, encounter_sequence_setup as 
+(select *
 , row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag order BY admit_date) as first_row
 , row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag order BY admit_date desc) as last_row
- from production-dna.analytics_int.encounter_augmented
+ from {{ ref('readmissions__encounter_augmented') }}
 order by admit_date)
 
 , dates as (select *
 , if(first_row=overlaps_with_another_encounter_flag, true, false) as first_row_flag
-, if(last_row=overlaps_with_another_encounter_flag, true, false) as last_row_flag
+, if(last_row=overlaps_with_another_encounter_flag, true, false) as last_row_flag 
+, case when (overlaps_with_another_encounter_flag=1 and first_row=overlaps_with_another_encounter_flag or last_row=overlaps_with_another_encounter_flag) then '1' end as row_number_keep
 from encounter_sequence_setup
 )
 
-,  admits as (select 
-*
+, add_row_number as (select *
+, row_number () over  (partition by patient_id order BY admit_date desc)  as row_count
 
+from dates
+where row_number_keep is not null
+order by admit_date)
+
+, join_setup as( select *
+, lag(encounter_id) over (partition by patient_id order by row_count desc) as admit_encounter_id
+from add_row_number)
+
+,  admits as (select *
 , row_number () over  (partition by patient_id order BY admit_date desc) as admit_rank
 
 from dates
 where first_row_flag )
 
-,  discharge as (select patient_id, 
-discharge_date
-, row_number () over  (partition by patient_id order BY discharge_date desc) as admit_rank
+, discharge as 
+(select distinct patient_id
+, discharge_date
+, admit_encounter_id
+, row_number () over  (partition by patient_id, disqualified_encounter_flag order BY discharge_date desc)  as admit_rank
+from join_setup
+where last_row_flag 
+)
 
-from dates
-where last_row_flag )
 
-join_admits_discharge as (select 
-, encounter_id
-, patient_id
+, join_admits_discharge as 
+(select 
+ admits.encounter_id
+, admits.patient_id
 , admits.admit_date
 , discharge.discharge_date
 , discharge_disposition_code
 , facility_npi
 , ms_drg_code
 , paid_amount
-, datediff(admits.admit_date, discharge.discharge_date, days) length_of_stay
-, index_admission_flag
+, date_diff( discharge.discharge_date, admits.admit_date, day) as length_of_stay
+, index_admission_flag 
 , planned_flag
+, specialty_cohort
 , died_flag
 , diagnosis_ccs
 , disqualified_encounter_flag
@@ -81,14 +92,9 @@ join_admits_discharge as (select
 from admits
 left join discharge 
 on admits.admit_rank=discharge.admit_rank
-)
+and admits.encounter_id=discharge.admit_encounter_id
+) 
 
-, encounter_sequence_update as (
-select
-  
-from join_admits_discharge
-
-)
 
 , join_together_encounter_sequence as (
 
@@ -96,11 +102,20 @@ select *
 from encounter_sequence
 union all
 select *
-from encounter_sequence_update
-
+from join_admits_discharge
 
 )
 
+, add_encounter_seq as (
+
+select * 
+, row_number() over(
+        partition by patient_id order by admit_date, discharge_date
+    ) as encounter_seq 
+from join_together_encounter_sequence
+
+
+)
 
 ,
 
@@ -113,7 +128,7 @@ select
     aa.discharge_disposition_code,
     aa.facility_npi,
     aa.ms_drg_code,
-    aa.paid_amount,
+    --aa.paid_amount,
     aa.length_of_stay,
     aa.index_admission_flag,
     aa.planned_flag,
@@ -147,11 +162,13 @@ select
     bb.died_flag as readmission_died_flag,
     bb.diagnosis_ccs as readmission_diagnosis_ccs
 from
-    encounter_sequence aa
-    left join encounter_sequence bb
+    add_encounter_seq aa
+    left join add_encounter_seq bb
     on aa.patient_id = bb.patient_id
     and aa.encounter_seq + 1 = bb.encounter_seq
 )
 
 select *
 from readmission_calc
+
+
