@@ -5,18 +5,12 @@
 
 {{ config(enabled=var('readmissions_enabled',var('tuva_packages_enabled',True))) }}
 
-
-
--- We create the encounter_sequence integer count
--- which keeps track of what number of encounter each
--- encounter is for a given patient
 with encounter_sequence as (
 select
     *
 from {{ ref('readmissions__encounter_augmented') }}
 where disqualified_encounter_flag = 0
 )
-
 
 , encounter_sequence_setup as 
 (select *
@@ -28,7 +22,9 @@ order by admit_date)
 , dates as (select *
 , if(first_row=overlaps_with_another_encounter_flag, true, false) as first_row_flag
 , if(last_row=overlaps_with_another_encounter_flag, true, false) as last_row_flag 
-, case when (overlaps_with_another_encounter_flag=1 and first_row=overlaps_with_another_encounter_flag or last_row=overlaps_with_another_encounter_flag) then '1' end as row_number_keep
+, case when (overlaps_with_another_encounter_flag=1 and first_row=overlaps_with_another_encounter_flag or 
+last_row=overlaps_with_another_encounter_flag) 
+then '1' end as row_number_keep
 from encounter_sequence_setup
 )
 
@@ -43,7 +39,7 @@ order by admit_date)
 , lag(encounter_id) over (partition by patient_id order by row_count desc) as admit_encounter_id
 from add_row_number)
 
-,  admits as (select *
+, admits as (select *
 , row_number () over  (partition by patient_id order BY admit_date desc) as admit_rank
 
 from dates
@@ -57,7 +53,6 @@ where first_row_flag )
 from join_setup
 where last_row_flag 
 )
-
 
 , join_admits_discharge as 
 (select 
@@ -95,31 +90,22 @@ on admits.admit_rank=discharge.admit_rank
 and admits.encounter_id=discharge.admit_encounter_id
 ) 
 
-
 , join_together_encounter_sequence as (
-
 select *
 from encounter_sequence
 union all
 select *
-from join_admits_discharge
-
-)
+from join_admits_discharge)
 
 , add_encounter_seq as (
-
 select * 
 , row_number() over(
         partition by patient_id order by admit_date, discharge_date
     ) as encounter_seq 
 from join_together_encounter_sequence
-
-
 )
 
-,
-
-readmission_calc as (
+, readmission_calc as (
 select
     aa.encounter_id,
     aa.patient_id,
