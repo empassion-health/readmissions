@@ -83,7 +83,7 @@ from dates
 where row_number_keep is not null
 order by admit_date)
 
-, join_setup as( select *
+, discharge_join_setup as( select *
 , lag(encounter_id) over (partition by patient_id order by row_count desc) as admit_encounter_id
 from add_row_number)
 
@@ -98,7 +98,7 @@ where first_row_flag )
 , discharge_date
 , admit_encounter_id
 , row_number () over  (partition by patient_id, disqualified_encounter_flag order BY discharge_date desc)  as admit_rank
-from join_setup
+from discharge_join_setup
 where last_row_flag 
 )
 
@@ -109,28 +109,6 @@ where last_row_flag
 , admits.admit_date
 , discharge.discharge_date
 , discharge_disposition_code
-, facility_npi
-, ms_drg_code
-, paid_amount
-, date_diff( discharge.discharge_date, admits.admit_date, day) as length_of_stay
-, index_admission_flag 
-, planned_flag
-, specialty_cohort
-, died_flag
-, diagnosis_ccs
-, disqualified_encounter_flag
-, missing_admit_date_flag
-, missing_discharge_date_flag
-, admit_after_discharge_flag
-, missing_discharge_disposition_code_flag
-, invalid_discharge_disposition_code_flag
-, missing_primary_diagnosis_flag
-, multiple_primary_diagnoses_flag
-, invalid_primary_diagnosis_code_flag
-, no_diagnosis_ccs_flag
-, 0 as overlaps_with_another_encounter_flag
-, missing_ms_drg_flag
-, invalid_ms_drg_flag
 
 from admits
 left join discharge 
@@ -159,13 +137,42 @@ select encounter_id
 , admit_date
 , discharge_date
 from multiple_transfers_one_row_final t
-
 )
 
-select *
-from transfers_combined_final
+, add_in_final_fields as (
 
-/*
+select 
+ f.encounter_id
+, f.patient_id
+, f.admit_date
+, f.discharge_date
+, discharge_disposition_code
+, facility_npi
+, ms_drg_code
+, paid_amount
+, date_diff( discharge.discharge_date, admits.admit_date, day) as length_of_stay
+, index_admission_flag 
+, planned_flag
+, specialty_cohort
+, died_flag
+, diagnosis_ccs
+, disqualified_encounter_flag
+, missing_admit_date_flag
+, missing_discharge_date_flag
+, admit_after_discharge_flag
+, missing_discharge_disposition_code_flag
+, invalid_discharge_disposition_code_flag
+, missing_primary_diagnosis_flag
+, multiple_primary_diagnoses_flag
+, invalid_primary_diagnosis_code_flag
+, no_diagnosis_ccs_flag
+, 0 as overlaps_with_another_encounter_flag
+, missing_ms_drg_flag
+, invalid_ms_drg_flag
+from transfers_combined_final f
+left join encounter_sequence_setup_multiple_transfers e
+on f.encounter_id=e.encounter_id
+)
 
 , join_together_encounter_sequence as (
 select *
@@ -235,4 +242,3 @@ select *
 from readmission_calc
 
 
-*/
