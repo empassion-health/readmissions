@@ -163,7 +163,7 @@ from multiple_transfers_one_row_final t
 )
 
 select *
-from transfers_combined
+from transfers_combined_final
 
 /*
 
