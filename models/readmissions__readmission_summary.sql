@@ -150,7 +150,7 @@ select
 , facility_npi
 , ms_drg_code
 , paid_amount
-, date_diff(discharge_date, admit_date, day) as length_of_stay
+, date_diff(f.discharge_date, f.admit_date, day) as length_of_stay
 , index_admission_flag 
 , planned_flag
 , specialty_cohort
