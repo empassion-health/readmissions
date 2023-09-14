@@ -179,7 +179,7 @@ select *
 from encounter_sequence
 union all
 select *
-from from add_in_final_fields)
+from add_in_final_fields)
 
 , add_encounter_seq as (
 select * 
