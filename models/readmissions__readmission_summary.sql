@@ -11,7 +11,55 @@ select
 from {{ ref('readmissions__encounter_augmented') }}
 where disqualified_encounter_flag = 0
 )
+--creating tables for members that have multiple transfers
+, encounter_sequence_setup_multiple_transfers as 
+(select *
+, row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag order BY admit_date) as first_row
+, row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag, admit_date order BY admit_date desc) as last_row
+, 
 
+lag (discharge_date , 1 ) 
+    OVER ( partition by patient_id, overlaps_with_another_encounter_flag  order by admit_date) as previous_discharge_date
+    , lead (admit_date , 1 ) 
+    OVER ( partition by patient_id, overlaps_with_another_encounter_flag  order by admit_date) as next_admit_date
+       , lead (discharge_date , 1 ) 
+    OVER ( partition by patient_id, overlaps_with_another_encounter_flag  order by admit_date) as test_discharge_date
+ from {{ ref('readmissions__encounter_augmented') }}
+order by admit_date)
+
+, dates_multiple_tranfers as (select *
+, case when discharge_date=next_admit_date or previous_discharge_date=admit_date then true else false end as transfer
+, case when discharge_date=next_admit_date then true else false end as transfer_1
+, case when previous_discharge_date=admit_date then true else false end as transfer_2
+from encounter_sequence_setup_multiple_transfers
+)
+
+, transfers as (select encounter_id
+, patient_id
+, admit_date
+, discharge_date
+, next_admit_date
+, test_discharge_date 
+, first_row
+, last_row
+, row_number () over  (partition by patient_id, transfer_1 order BY admit_date) as transfer_partition
+, transfer
+from dates_multiple_tranfers
+where transfer
+order by patient_id, admit_date)
+
+, transfer_setup as (select *
+, case when discharge_date=next_admit_date then lead(transfer_partition,1 ) OVER ( partition by patient_id  order by admit_date) end as lead_discharge_flag
+from transfers )
+
+, multiple_transfers_one_row_final as (select encounter_id
+, patient_id
+, admit_date
+, case when lead_discharge_flag=transfer_partition then test_discharge_date else null end as discharge_date
+from transfer_setup
+where lead_discharge_flag=transfer_partition)
+
+--creating tables for members that have transfers with two rows, transferred multiple times
 , encounter_sequence_setup as 
 (select *
 , row_number () over  (partition by patient_id, overlaps_with_another_encounter_flag order BY admit_date) as first_row
@@ -90,6 +138,35 @@ on admits.admit_rank=discharge.admit_rank
 and admits.encounter_id=discharge.admit_encounter_id
 ) 
 
+, transfers_combined as (
+select d.*
+from join_admits_discharge d
+full outer join multiple_transfers_one_row_final f
+on d.encounter_id=f.encounter_id
+where f.encounter_id is null
+)
+
+, transfers_combined_final as (select encounter_id
+, patient_id
+, admit_date
+, discharge_date
+from transfers_combined
+
+union all 
+
+select encounter_id
+, patient_id
+, admit_date
+, discharge_date
+from multiple_transfers_one_row_final t
+
+)
+
+select *
+from transfers_combined
+
+/*
+
 , join_together_encounter_sequence as (
 select *
 from encounter_sequence
@@ -158,3 +235,4 @@ select *
 from readmission_calc
 
 
+*/
