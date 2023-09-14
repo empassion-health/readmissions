@@ -240,5 +240,5 @@ from
 
 select *
 from readmission_calc
-
+where length_of_stay < 120
 
