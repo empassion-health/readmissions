@@ -3,6 +3,8 @@
 -- and we augment them with extra fields
 -- that are relevant for readmission measures
 
+/* Update 9/12/23 Including encounters that were previously eliminated because of a flaw in the logic for 
+overlapping encounters */
 
 {{ config(enabled=var('readmissions_enabled',var('tuva_packages_enabled',True))) }}
 
@@ -53,3 +55,5 @@ from
     on aa.encounter_id = dd.encounter_id
     left join {{ ref('readmissions__encounter_data_quality') }} ee
     on aa.encounter_id = ee.encounter_id
+
+    
